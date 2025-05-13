@@ -37,8 +37,6 @@ const CategoriesScreen = () => {
 
     return (
         <SafeAreaView className="flex-1">
-            <Text className="text-black dark:text-white text-xl font-bold px-4 py-2">Categories</Text>
-
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item.id.toString()}
