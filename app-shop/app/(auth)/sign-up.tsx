@@ -18,9 +18,15 @@ import { getFileFromUriAsync } from '@/utils/getFileFromUriAsync'
 import { useRegisterMutation } from '@/services/accountService'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import AuthFormField from '@/components/AuthFormField'
+import * as SecureStore from 'expo-secure-store'
+import { jwtDecode } from 'jwt-decode'
+import { IUser } from '@/interfaces/account'
+import { setCredentials } from '@/store/slices/userSlice'
+import { useAppDispatch } from '@/store'
 
 const SignupScreen = () => {
     const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' })
+    const dispatch = useAppDispatch()
     const [formError, setFormError] = useState({
         firstName: { error: false, message: '' },
         lastName: { error: false, message: '' },
@@ -93,14 +99,16 @@ const SignupScreen = () => {
             if (image) {
                 const file = await getFileFromUriAsync(image)
 
-                const res = await register({
+                const result = await register({
                     ...form,
                     //@ts-ignore
                     image: file,
                 }).unwrap()
-
-                alert('Реєстрація успішна')
-                router.replace('/sign-in')
+                const { token } = result
+                await SecureStore.setItemAsync('token', token)
+                const user = jwtDecode<IUser>(token)
+                dispatch(setCredentials({ token: token, user }))
+                router.replace('/profile')
             }
         } catch (error) {
             console.log('--Error register---', error)
