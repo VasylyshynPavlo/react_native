@@ -1,6 +1,6 @@
 import { createApi, EndpointBuilder } from '@reduxjs/toolkit/query/react'
 import { createBaseQuery } from '@/utils/createBaseQuery'
-import { ICategory } from '@/interfaces/Category/Category'
+import { ICategory, ICreateCategory } from '@/interfaces/Category/Category'
 
 export const categoryApi = createApi({
     reducerPath: 'categoryApi',
@@ -28,7 +28,22 @@ export const categoryApi = createApi({
             // or perform a refetch.
             invalidatesTags: ['Categories'],
         }),
+        addCategory: builder.mutation<void, ICreateCategory>({
+            query: (data: ICreateCategory) => {
+                const formData = new FormData()
+                formData.append('name', data.name)
+                //@ts-ignore
+                formData.append('image', data.image)
+                formData.append('description', data.description)
+
+                return {
+                    url: 'create',
+                    method: 'POST',
+                    body: formData,
+                }
+            }
+        })
     }),
 })
 
-export const { useGetCategoryQuery, useDeleteCategoryMutation } = categoryApi
+export const { useGetCategoryQuery, useDeleteCategoryMutation, useAddCategoryMutation } = categoryApi

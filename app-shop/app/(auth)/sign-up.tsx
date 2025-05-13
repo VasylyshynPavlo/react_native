@@ -17,7 +17,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { getFileFromUriAsync } from '@/utils/getFileFromUriAsync'
 import { useRegisterMutation } from '@/services/accountService'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import AuthFormField from '@/components/AuthFormField'
+import FormField from '@/components/FormField'
 import * as SecureStore from 'expo-secure-store'
 import { jwtDecode } from 'jwt-decode'
 import { IUser } from '@/interfaces/account'
@@ -32,6 +32,7 @@ const SignupScreen = () => {
         lastName: { error: false, message: '' },
         email: { error: false, message: '' },
         password: { error: false, message: '' },
+        avatar: { error: false, message: '' },
     })
 
     const colorScheme = useColorScheme()
@@ -88,6 +89,13 @@ const SignupScreen = () => {
             handleFormError('password', false, '')
         }
 
+        if (!image) {
+            handleFormError('avatar', true, 'Avatar is required')
+            errorCount++
+        } else {
+            handleFormError('avatar', false, '')
+        }
+
         return errorCount === 0
     }
 
@@ -121,7 +129,7 @@ const SignupScreen = () => {
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
         if (!permissionResult.granted) {
-            alert('Для вибору фото дай доступ до файлів')
+            alert('To select a photo, please allow access to your files')
             return
         }
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -149,11 +157,11 @@ const SignupScreen = () => {
 
                         {isSuccess ? (
                             <Text className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400">
-                                Вхід успішний
+                                Enter Success
                             </Text>
                         ) : null}
 
-                        <AuthFormField
+                        <FormField
                             title="Name"
                             value={form.firstName}
                             placeholder="Enter your name"
@@ -165,7 +173,7 @@ const SignupScreen = () => {
                             errorMessage={formError.firstName.message}
                         />
 
-                        <AuthFormField
+                        <FormField
                             title="Surname"
                             value={form.lastName}
                             placeholder="Enter your surname"
@@ -177,7 +185,7 @@ const SignupScreen = () => {
                             errorMessage={formError.lastName.message}
                         />
 
-                        <AuthFormField
+                        <FormField
                             title="Email"
                             value={form.email}
                             placeholder="Enter your email"
@@ -190,7 +198,7 @@ const SignupScreen = () => {
                             errorMessage={formError.email.message}
                         />
 
-                        <AuthFormField
+                        <FormField
                             title="Password"
                             value={form.password}
                             placeholder="Enter your password"
@@ -216,6 +224,9 @@ const SignupScreen = () => {
                                     </View>
                                 )}
                             </TouchableOpacity>
+                            {formError.avatar.error && (
+                                <Text className="text-red-500 text-sm mt-2">{formError.avatar.message}</Text>
+                            )}
                         </View>
 
                         <TouchableOpacity

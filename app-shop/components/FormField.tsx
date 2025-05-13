@@ -17,7 +17,7 @@ interface FromFieldProps extends TextInputProps {
     autoCapitalize?: TextInputProps['autoCapitalize']
 }
 
-const AuthFormField: React.FC<FromFieldProps> = ({
+const FormField: React.FC<FromFieldProps> = ({
                                                      title,
                                                      value,
                                                      placeholder,
@@ -85,4 +85,4 @@ const AuthFormField: React.FC<FromFieldProps> = ({
     )
 }
 
-export default AuthFormField
+export default FormField

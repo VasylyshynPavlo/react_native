@@ -20,7 +20,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useAppDispatch } from '@/store'
 import { setCredentials } from '@/store/slices/userSlice'
 import { IUser } from '@/interfaces/account'
-import AuthFormField from '@/components/AuthFormField'
+import FormField from '@/components/FormField'
 
 const SigninScreen = () => {
     const [form, setForm] = useState({ email: '', password: '' })
@@ -122,7 +122,7 @@ const SigninScreen = () => {
                         }}>
                         <Text className={`text-3xl font-bold ${colorScheme === 'dark' ? 'text-white' : 'text-black'}`}>Login</Text>
 
-                        <AuthFormField
+                        <FormField
                             title="Email"
                             value={form.email}
                             placeholder="Enter your email"
@@ -135,7 +135,7 @@ const SigninScreen = () => {
                             errorMessage={formError.email.message}
                         />
 
-                        <AuthFormField
+                        <FormField
                             title="Password"
                             value={form.password}
                             placeholder="Enter your password"

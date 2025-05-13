@@ -10,6 +10,10 @@ const MAPPING = {
     'chevron.left.forwardslash.chevron.right': 'code',
     'chevron.right': 'chevron-right',
     'delete.fill': 'delete',
+    'edit.fill': 'edit',
+    'add.fill': 'add',
+    'arrow_back.fill': 'arrow-back',
+    'image.fill': 'image',
 } as Partial<Record<import('expo-symbols').SymbolViewProps['name'], React.ComponentProps<typeof MaterialIcons>['name']>>
 
 export type IconSymbolName =
@@ -19,6 +23,10 @@ export type IconSymbolName =
     | 'chevron.left.forwardslash.chevron.right'
     | 'chevron.right'
     | 'delete.fill'
+    | 'edit.fill'
+    | 'add.fill'
+    | 'arrow_back.fill'
+    | 'image.fill'
 
 export function IconSymbol({
                                name,
