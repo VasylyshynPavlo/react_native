@@ -1,24 +1,22 @@
 import React, { useState } from 'react'
 import {
-    Alert,
     Dimensions,
     Image,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
     ScrollView,
     Text,
-    TextInput,
-    TouchableOpacity, useColorScheme,
+    TouchableOpacity,
+    useColorScheme,
     View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { getFileFromUriAsync } from '@/utils/getFileFromUriAsync'
 import { useRegisterMutation } from '@/services/accountService'
 import LoadingOverlay from '@/components/LoadingOverlay'
-import { colorScheme } from 'nativewind'
 import AuthFormField from '@/components/AuthFormField'
 
 const SignupScreen = () => {
@@ -30,7 +28,7 @@ const SignupScreen = () => {
         password: { error: false, message: '' },
     })
 
-    const colorScheme = useColorScheme();
+    const colorScheme = useColorScheme()
 
     const [image, setImage] = useState<string | null>(null)
 
@@ -201,8 +199,7 @@ const SignupScreen = () => {
                         <View className="w-full flex items-center justify-center mt-6 mb-2">
                             <TouchableOpacity
                                 onPress={pickImage}
-                                className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600"
-                            >
+                                className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600">
                                 {image ? (
                                     <Image source={{ uri: image }} className="w-full h-full" />
                                 ) : (
@@ -212,7 +209,6 @@ const SignupScreen = () => {
                                 )}
                             </TouchableOpacity>
                         </View>
-
 
                         <TouchableOpacity
                             onPress={handleSignup}

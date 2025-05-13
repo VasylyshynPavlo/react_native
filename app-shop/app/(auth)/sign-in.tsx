@@ -3,7 +3,6 @@ import {
     Dimensions,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -13,6 +12,7 @@ import {
 import { router } from 'expo-router'
 import { useLoginMutation } from '@/services/accountService'
 import LoadingOverlay from '@/components/LoadingOverlay'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import * as SecureStore from 'expo-secure-store'
 
