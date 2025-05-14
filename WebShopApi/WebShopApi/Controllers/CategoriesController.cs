@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebShopApi.Abstract;
 using WebShopApi.Data;
 using WebShopApi.Data.Entities;
@@ -38,6 +39,30 @@ public class CategoriesController(WebShopDbContext context,
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetCategory(int id)
+    {
+        try
+        {
+            string userName = User.Claims.FirstOrDefault()?.Value;
+            var user = await userManager.FindByEmailAsync(userName);
+
+            var category = await context.Categories
+                .Where(x => x.Id == id && x.UserId == user.Id)
+                .ProjectTo<CategoryItemViewModel>(mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+                return NotFound();
+
+            return Ok(category);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CategoryCreateViewModel model)
     {

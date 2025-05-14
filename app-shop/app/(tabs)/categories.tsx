@@ -1,4 +1,15 @@
-import { FlatList, Text, View, RefreshControl, Alert, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native'
+import {
+    FlatList,
+    Text,
+    View,
+    RefreshControl,
+    Alert,
+    Image,
+    TouchableOpacity,
+    Modal,
+    TouchableWithoutFeedback,
+    useColorScheme,
+} from 'react-native'
 import { useRouter } from 'expo-router'
 import { useAppDispatch, useAppSelector } from '@/store'
 import React, { useState, useCallback } from 'react'
@@ -17,6 +28,8 @@ const CategoriesScreen = () => {
     // State for handling full screen image modal
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
+    const colorScheme = useColorScheme()
 
     if (error) {
         console.log('error', error)
@@ -49,20 +62,23 @@ const CategoriesScreen = () => {
         setSelectedImage(null)
     }
 
+    // @ts-ignore
     return (
         <SafeAreaView className="flex-1">
             <View>
                 <TouchableOpacity
-                    className="mr-auto flex-row align-items-center justify-content-center items-center p-2 bg-green-500 rounded-md"
+                    className="flex-row items-center justify-center p-2 bg-transparent rounded-md border-black dark:border-gray-500 border dark:border"
+                    style={{ borderStyle: 'dashed' }}
                     onPress={() => router.replace('/add-category')}
                 >
                     <IconSymbol
-                        name="edit.fill"
+                        name="add.fill"
                         size={28}
-                        color="white"
+                        color={colorScheme === 'dark' ? 'white' : 'black'}
                     />
-                    <Text className="ml-1 text-white">Add</Text>
+                    <Text className="ml-1 text-black dark:text-white text-base">Add</Text>
                 </TouchableOpacity>
+
             </View>
 
             <FlatList
@@ -86,25 +102,25 @@ const CategoriesScreen = () => {
                             <Text className="text-gray-600 dark:text-gray-400 mt-1">{item.description}</Text>
 
                             <TouchableOpacity
-                                // onPress={() => handleDelete(item.id)}
-                                className="absolute bottom-2.5 bg-yellow-500 rounded-full p-1.5"
+                                onPress={() => router.replace(`/edit-category/${item.id}`)}
+                                className="absolute bottom-2.5 border border-gray-500 rounded-md p-1.5"
                                 style={{right: 60}}
                             >
                                 <IconSymbol
                                     name="edit.fill"
                                     size={28}
-                                    color="white"
+                                    color={colorScheme === 'dark' ? 'white' : 'black'}
                                 />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => handleDelete(item.id)}
-                                className="absolute bottom-2.5 bg-red-500 rounded-full p-1.5"
+                                className="absolute bottom-2.5 border border-gray-500 rounded-md p-1.5"
                                 style={{right: 10}}
                             >
                                 <IconSymbol
                                     name="delete.fill"
                                     size={28}
-                                    color="white"
+                                    color={colorScheme === 'dark' ? 'white' : 'black'}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -133,7 +149,7 @@ const CategoriesScreen = () => {
                 onRequestClose={handleCloseModal}
             >
                 <TouchableWithoutFeedback onPress={handleCloseModal}>
-                    <View className="flex-1 justify-center items-center bg-black bg-opacity-80">
+                    <View className="flex-1 justify-center items-center bg-black">
                         <TouchableWithoutFeedback>
                             <View className="relative">
                                 {selectedImage && (

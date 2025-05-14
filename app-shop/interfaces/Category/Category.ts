@@ -11,3 +11,10 @@ export interface ICreateCategory {
     image: File | null
     description: string
 }
+
+export interface IEditCategory {
+    id: number
+    name: string
+    image: File | null
+    description: string
+}
