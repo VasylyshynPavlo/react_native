@@ -11,3 +11,13 @@ export const getFileFromUriAsync = async (uri: string) => {
   }
   return null
 }
+
+export const getFilesFromUris = async (uris: string[]) => {
+    const files = await Promise.all(
+        uris.map(async (uri) => {
+            const file = await getFileFromUriAsync(uri)
+            return file
+        })
+    )
+    return files.filter((file) => file !== null)
+}

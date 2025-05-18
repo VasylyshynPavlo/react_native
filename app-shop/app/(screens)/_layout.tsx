@@ -7,8 +7,18 @@ import { IconSymbol } from '@/components/ui/IconSymbol'
 const ScreensLayout = () => {
     const colorScheme = useColorScheme()
 
-    const backButton = () => (
-        <TouchableOpacity onPress={() => router.replace('/categories')} className="px-4">
+    const backButtonCategories = () => (
+        <TouchableOpacity onPress={() => router.replace(`/categories`)} className="px-4">
+            <IconSymbol
+                name="arrow_back.fill"
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+                size={28}
+            />
+        </TouchableOpacity>
+    )
+
+    const backButtonProducts = () => (
+        <TouchableOpacity onPress={() => router.replace(`/products`)} className="px-4">
             <IconSymbol
                 name="arrow_back.fill"
                 color={colorScheme === 'dark' ? 'white' : 'black'}
@@ -20,12 +30,28 @@ const ScreensLayout = () => {
     return (
         <>
             <Stack>
+                {/*<Stack.Screen*/}
+                {/*    name="edit-product/[id]"*/}
+                {/*    options={{*/}
+                {/*        headerShown: true,*/}
+                {/*        title: 'Edit Product',*/}
+                {/*        headerLeft: backButtonProducts,*/}
+                {/*    }}*/}
+                {/*/>*/}
+                <Stack.Screen
+                    name="add-product"
+                    options={{
+                        headerShown: true,
+                        title: 'Add Product',
+                        headerLeft: backButtonProducts,
+                    }}
+                />
                 <Stack.Screen
                     name="add-category"
                     options={{
                         headerShown: true,
                         title: 'Add Category',
-                        headerLeft: backButton,
+                        headerLeft: backButtonCategories,
                     }}
                 />
                 <Stack.Screen
@@ -33,7 +59,7 @@ const ScreensLayout = () => {
                     options={{
                         headerShown: true,
                         title: 'Edit Category',
-                        headerLeft: backButton,
+                        headerLeft: backButtonCategories,
                     }}
                 />
             </Stack>

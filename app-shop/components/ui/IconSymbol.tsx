@@ -1,32 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { SymbolWeight } from 'expo-symbols'
 import React from 'react'
-import { OpaqueColorValue, StyleProp, TextStyle, ViewStyle } from 'react-native'
+import { OpaqueColorValue, StyleProp, TextStyle } from 'react-native'
 
-const MAPPING = {
-    'house.fill': 'home',
-    'category.fill': 'category',
-    'paperplane.fill': 'send',
-    'chevron.left.forwardslash.chevron.right': 'code',
-    'chevron.right': 'chevron-right',
-    'delete.fill': 'delete',
-    'edit.fill': 'edit',
-    'add.fill': 'add',
-    'arrow_back.fill': 'arrow-back',
-    'image.fill': 'image',
-} as Partial<Record<import('expo-symbols').SymbolViewProps['name'], React.ComponentProps<typeof MaterialIcons>['name']>>
-
-export type IconSymbolName =
-    | 'house.fill'
-    | 'category.fill'
-    | 'paperplane.fill'
-    | 'chevron.left.forwardslash.chevron.right'
-    | 'chevron.right'
-    | 'delete.fill'
-    | 'edit.fill'
-    | 'add.fill'
-    | 'arrow_back.fill'
-    | 'image.fill'
+function mapToMaterialIcon(name: string): React.ComponentProps<typeof MaterialIcons>['name'] {
+    return name
+        .replace('.fill', '')
+        .replace(/_/g, '-') as React.ComponentProps<typeof MaterialIcons>['name'];
+}
 
 export function IconSymbol({
                                name,
@@ -34,12 +14,11 @@ export function IconSymbol({
                                color,
                                style,
                            }: {
-    name: IconSymbolName
+    name: string
     size?: number
     color: string | OpaqueColorValue
     style?: StyleProp<TextStyle>
-    weight?: SymbolWeight
 }) {
-    // @ts-ignore
-    return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />
+    const materialName = mapToMaterialIcon(name);
+    return <MaterialIcons color={color} size={size} name={materialName} style={style} />;
 }

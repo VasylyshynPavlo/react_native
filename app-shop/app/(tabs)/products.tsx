@@ -1,37 +1,28 @@
+import React, { useState, useCallback } from 'react'
 import {
     FlatList,
     Text,
     View,
     RefreshControl,
-    Alert,
-    Image,
-    TouchableOpacity,
-    Modal,
-    TouchableWithoutFeedback,
     useColorScheme,
+    TouchableWithoutFeedback, TouchableOpacity, Modal, Alert,
 } from 'react-native'
-import { useRouter } from 'expo-router'
-import { useAppDispatch } from '@/store'
-import React, { useState, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useGetCategoryQuery, useDeleteCategoryMutation } from '@/services/categoryService'
+import { useRouter } from 'expo-router'
+import { useDeleteProductMutation, useGetProductsQuery } from '@/services/productsService'
 import { BASE_URL } from '@/constants/Urls'
+import Carousel from 'react-native-reanimated-carousel'
+import { Image } from 'expo-image'
 import { IconSymbol } from '@/components/ui/IconSymbol'
 
-const CategoriesScreen = () => {
+const ProductsScreen = () => {
     const router = useRouter()
-    const { data: categories, isLoading, error, refetch, isFetching } = useGetCategoryQuery()
-    const [deleteCategory] = useDeleteCategoryMutation()
-
-    // State for handling full screen image modal
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [selectedImage, setSelectedImage] = useState<string | null>(null)
+    const { data: products, error, refetch, isFetching } = useGetProductsQuery()
+    if (products) console.log(products)
+    const [deleteProduct] = useDeleteProductMutation()
+    const [carouselWidth, setCarouselWidth] = useState<number>(0);
 
     const colorScheme = useColorScheme()
-
-    if (error) {
-        console.log('error', error)
-    }
 
     const handleRefresh = useCallback(() => {
         refetch()
@@ -50,11 +41,11 @@ const CategoriesScreen = () => {
                     text: 'Delete',
                     style: 'destructive',
                     onPress: () => {
-                        deleteCategory(id)
+                        deleteProduct(id)
                             .unwrap()
                             .then(() => {
                                 refetch()
-                                Alert.alert('Category deleted successfully')
+                                Alert.alert('Product deleted successfully')
                             })
                             .catch((error) => {
                                 console.error('Error deleting category:', error)
@@ -67,24 +58,13 @@ const CategoriesScreen = () => {
         )
     }
 
-    const handleImagePress = (imageUri: string) => {
-        setSelectedImage(imageUri)
-        setIsModalVisible(true)
-    }
-
-    const handleCloseModal = () => {
-        setIsModalVisible(false)
-        setSelectedImage(null)
-    }
-
-    // @ts-ignore
     return (
         <SafeAreaView className="flex-1">
             <View>
                 <TouchableOpacity
                     className="flex-row items-center justify-center p-2 bg-transparent rounded-md border-black dark:border-gray-500 border dark:border"
                     style={{ borderStyle: 'dashed' }}
-                    onPress={() => router.replace('/add-category')}
+                    onPress={() => router.replace('/add-product')}
                 >
                     <IconSymbol
                         name="add.fill"
@@ -96,23 +76,42 @@ const CategoriesScreen = () => {
             </View>
 
             <FlatList
-                data={categories}
+                data={products}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View className="px-4 py-2 border-b border-gray-300 dark:border-gray-700">
-                        <View className="bg-white dark:bg-gray-900 rounded-t-lg shadow-md p-4 mb-0 relative">
-                            <TouchableOpacity
-                                onPress={() => handleImagePress(`${BASE_URL}/uploading/1200_${item.image}`)}
-                            >
-                                <Image
-                                    source={{ uri: `${BASE_URL}/uploading/1200_${item.image}` }}
-                                    style={{ width: '100%', aspectRatio: 1, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                                    resizeMode="cover"
-                                />
-                            </TouchableOpacity>
+                        <View
+                            className="bg-white dark:bg-gray-900 rounded-t-lg shadow-md p-4 mb-0 relative"
+                            onLayout={(event) => {
+                                const { width } = event.nativeEvent.layout;
+                                setCarouselWidth(width-32);
+                            }}
+                        >
+                            {carouselWidth > 0 && (
+                                <TouchableOpacity>
+                                    <Carousel
+                                        loop
+                                        width={carouselWidth}
+                                        height={300}
+                                        autoPlay={false}
+                                        data={item.imageUrls}
+                                        scrollAnimationDuration={500}
+                                        renderItem={({ item }) => (
+                                            <TouchableWithoutFeedback>
+                                                <Image
+                                                    source={{ uri: `${BASE_URL}/uploading/1200_${item}` }}
+                                                    style={{ width: carouselWidth, height: 300, borderRadius: 8 }}
+                                                    contentFit="cover"
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        )}
+                                    />
+                                </TouchableOpacity>
+                            )}
 
                             <Text className="text-sm text-gray-400 mt-2">{`ID: ${item.id}`}</Text>
                             <Text className="text-black dark:text-white text-lg font-semibold mt-2">{item.name}</Text>
+                            <Text className="text-black dark:text-white text-4xl font-bold mt-2">${item.price}</Text>
                             <Text className="text-gray-600 dark:text-gray-400 mt-1">{item.description}</Text>
                         </View>
 
@@ -125,7 +124,8 @@ const CategoriesScreen = () => {
                             }}
                         >
                             <TouchableOpacity
-                                onPress={() => router.replace(`/edit-category/${item.id}`)}
+                                // onPress={() => router.replace(`/edit-product/${item.id}`)}
+                                onPress={() => alert('Не вийшло😭')}
                                 className="flex-1 items-center justify-center p-3 border-r border-gray-300 dark:border-gray-700"
                             >
                                 <IconSymbol
@@ -162,31 +162,8 @@ const CategoriesScreen = () => {
                         : null
                 }
             />
-
-            <Modal
-                visible={isModalVisible}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={handleCloseModal}
-            >
-                <TouchableWithoutFeedback onPress={handleCloseModal}>
-                    <View className="flex-1 justify-center items-center bg-black">
-                        <TouchableWithoutFeedback>
-                            <View className="relative">
-                                {selectedImage && (
-                                    <Image
-                                        source={{ uri: selectedImage }}
-                                        style={{width: 300, height: 300, borderRadius: 8 }}
-                                        resizeMode="contain"
-                                    />
-                                )}
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
         </SafeAreaView>
     )
 }
 
-export default CategoriesScreen
+export default ProductsScreen
