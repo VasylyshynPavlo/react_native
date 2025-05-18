@@ -113,6 +113,7 @@ const ProductsScreen = () => {
                             <Text className="text-black dark:text-white text-lg font-semibold mt-2">{item.name}</Text>
                             <Text className="text-black dark:text-white text-4xl font-bold mt-2">${item.price}</Text>
                             <Text className="text-gray-600 dark:text-gray-400 mt-1">{item.description}</Text>
+                            <Text className="text-gray-600 dark:text-gray-400 mt-1 italic">Category: {item.categoryName}</Text>
                         </View>
 
                         <View
